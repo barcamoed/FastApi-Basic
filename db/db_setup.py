@@ -13,9 +13,9 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, futu
 Base = declarative_base()
 
 
-def db_setup():
+def get_db():
     db = SessionLocal()
     try:
-        yield db()
+        yield db
     finally:
         db.close()

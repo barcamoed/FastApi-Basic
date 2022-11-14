@@ -13,6 +13,7 @@ sqlalchemy = "^1.4.43"
 psycopg2-binary = "^2.9.5"
 python-dotenv = "^0.21.0"
 sqlalchemy-utils = "^0.38.3"
+alembic = "^1.8.1"
 
 
 [build-system]
