@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
 from db.models.user import User
+from db.models.course import Course
 from pydantic_schema.user import UserCreate
 
 
@@ -19,6 +20,11 @@ def get_user_by_email(db: Session, email: str):
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
+
+
+def get_user_courses(db, user_id):
+    user_courses = db.query(Course).filter(Course.user_id == user_id).all()
+    return user_courses
 
 
 def create_user(db: Session, user: UserCreate):
