@@ -4,11 +4,13 @@ from api.utils.users import get_users, get_user_by_email, get_user_courses, get_
 from typing import Optional, List
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic_schema.course import Course
-from db.db_setup import get_db
+from db.db_setup import get_db, async_get_db
 from pydantic_schema.user import UserCreate, User
 
-# class User(BaseModel):  # Using pydantic for validation of fields, It's like defining a type or interface in typescript
+# Using pydantic for validation of fields, It's like defining a type or interface in typescript
+# class User(BaseModel):
 #     email: str
 #     is_active: bool
 #     bio: Optional[str]  # If bio parameter is not in the request body, it will save it as null
@@ -31,13 +33,23 @@ async def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     # print('request', await request.json())
     return create_user(db=db, user=user)
 
+    # Synchronous fetch user
 
+
+# @router.post("/fetch-user/{user_id}", response_model=User)
+# # Every path parameter (in the url like id here) must be defined inside the function like below
+# async def fetch_user(user_id: int, db: Session = Depends(get_db)):
+#     # dots (...) means required,
+#     # gt means greater than
+#     return get_user(db=db, user_id=user_id)
+
+
+# ASynchronous fetch user
 @router.post("/fetch-user/{user_id}", response_model=User)
 # Every path parameter (in the url like id here) must be defined inside the function like below
-async def fetch_user(user_id: int, db: Session = Depends(get_db)):
-    # dots (...) means required,
-    # gt means greater than
-    return get_user(db=db, user_id=user_id)
+async def fetch_user(user_id: int, db: AsyncSession = Depends(async_get_db)):
+    # user = await get_user(db=db, user_id=user_id)
+    return await get_user(db=db, user_id=user_id)
 
 
 @router.get('/user-courses/{user_id}', response_model=List[Course])
